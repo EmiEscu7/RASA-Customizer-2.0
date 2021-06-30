@@ -1,34 +1,115 @@
 version: "2.0"
 
 intents:
+  - what_i_do
   - greet
-  - goodbye
-  - affirm
-  - deny
-  - mood_great
-  - mood_unhappy
-  - bot_challenge
+
+entities:
+  - what_i_do
+
+slots:
+  task:
+    type: bool
+    auto_fill: false
+    influence_conversation: false
+
+  meet:
+    type: bool
+    auto_fill: false
+    influence_conversation: false
+  
+  what_i_do:
+    type: text
+    auto_fill: true
+    influence_conversation: false
+  
 
 responses:
-  utter_greet:
-  - text: "Hey! How are you?"
+  utter_what_i_do_both_informal:
+    - text: "gato fui a la reunion {1} e hice la task {0}"
+    - text: "maquina fui a la reunion {1} e hice la task {0}"
+    - text: "pa estuve con la task {0} y en la reunion {1}"
+    
+  utter_what_i_do_task_informal:
+    - text: "Que onda gato, estuve trabajando con la task {0} bro"
+    - text: "Broo que ondaa, anduve a full con la task {0} "
+    - text: "Labure a pleno con la task {0} "
+    
+  utter_what_i_do_meet_informal:
+    - text: "Gato, fui a la reunion {0} "
+    - text: "Broo, estuve en la reunion {0} "
+    - text: "Que onda man, anduve por la reunion {0} "
+    
 
-  utter_cheer_up:
-  - text: "Here is something to cheer you up:"
-    image: "https://i.imgur.com/nGF1K8f.jpg"
+  utter_what_i_do_both_formal:
+    - text: "Logre asistir a la reunion {1} y realizar la task {0}"
+    - text: "Pude asistir a la reunion {1} y centre mi trabajo en la task {0}"
+    - text: "Centre mi tiempo en realizar task {0} y asistir a la reunion {1}"
+  
+  utter_what_i_do_task_formal:
+    - text: "Mi trabajo estuvo centrado en la task {0}"
+    - text: "Estuve trabajando con la tarea {0}"
+    - text: "Me centre en la tarea {0}"
+  
+  utter_what_i_do_meet_formal:
+    - text: "Decidi asistir a la reunion {0}"
+    - text: "Logre asistir a la reunion {0}"
+    - text: "He ido a la reunion {0}"
+    
 
-  utter_did_that_help:
-  - text: "Did that help you?"
+  utter_what_i_do_both_comun:
+    - text: "Fui a la reunion {1} e hice la task {0}"
+    - text: "Asisti a la reunion {1} y trabaje con la task {0}"
+    - text: "Anduve haciendo la task {0} y fui a la reunion {1}"
+  
+  utter_what_i_do_task_comun:
+    - text: "Me puse a hacer la task {0}"
+    - text: "Anduve laburando con la task {0}"
+    - text: "Estuve trabajando con la task{0}"
+  
+  utter_what_i_do_meet_comun:
+    - text: "Fui a las reunion {0}"
+    - text: "Estuve yendo a las reunion {0}"
+    - text: "Pude ir a las reunion {0}"
+    
 
-  utter_happy:
-  - text: "Great, carry on!"
 
-  utter_goodbye:
-  - text: "Bye"
-
-  utter_iamabot:
-  - text: "I am a bot, powered by Rasa."
 
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
+
+#INFORMAL
+# TASK:
+#      text: "Broo que ondaa, anduve a full con la task {0} "
+#      text: "Labure a pleno con la task {0} "
+# REUNION:
+#     text: "Broo, estuve en la reunion {0} "
+#     text: "Que onda man, anduve por la reunion {0} "
+# BOTH:
+#     text: "maquina fui a la reunion {1} e hice la task {0}"
+#     text: "pa estuve con la task {0} y en la reunion {1}"
+   
+
+
+#COMUN
+# TASK
+#      text: "Anduve laburando con la task {0}"
+#      text: "Estuve trabajando con la task{0}"
+# REUNION
+#      text: "Estuve yendo a las reunion {0}"
+#      text: "Pude ir a las reunion {0}"
+#  BOTH
+#      text: "Asisti a la reunion {1} y trabaje con la task {0}"
+#      text: "Anduve haciendo la task {0} y fui a la reunion {1}"
+
+#FORMAL
+#  TASK
+#    text: "Estuve trabajando con la tarea {0}"
+#    text: "Me centre en la tarea {0}"
+#  REUNION
+#    text: "Logre asistir a la reunion {0}"
+#    text: "He ido a la reunion {0}"
+#  BOTH
+#    text: "Pude asistir a la reunion {1} y centre mi trabajo en la task {0}"
+#    text: "Centre mi tiempo en realizar task {0} y asistir a la reunion {1}"

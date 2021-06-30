@@ -3,90 +3,34 @@ version: "2.0"
 nlu:
 - intent: greet
   examples: |
-    - hey
-    - hello
-    - hi
-    - hello there
-    - good morning
-    - good evening
-    - moin
-    - hey there
-    - let's go
-    - hey dude
-    - goodmorning
-    - goodevening
-    - good afternoon
+    - hola
+    - holis
+    - uwu
+    - holanda
+    - buenas tardes
 
-- intent: goodbye
+- intent: what_i_do_task
   examples: |
-    - good afternoon
-    - cu
-    - good by
-    - cee you later
-    - good night
-    - bye
-    - goodbye
-    - have a nice day
-    - see you around
-    - bye bye
-    - see you later
+    - He estado trabajando con la tarea {0} 
+    - Estuve trabajando con la tarea {0}
+    - Hice la task {0}
+    - Trabaje sobre la tarea {0}
+    - Comence con la task {0}
+    
 
-- intent: affirm
+- intent: what_i_do_meet
   examples: |
-    - yes
-    - y
-    - indeed
-    - of course
-    - that sounds good
-    - correct
-
-- intent: deny
+    - Fui a las reuniones {0} 
+    - Estuve yendo a las reuniones {0}
+    - Estuve asistiendo en las reuniones {0}
+    - Asisti a las reuniones {0}
+    - Tuve el placer de asistir al a reunion {0}
+    
+- intent: what_i_do_both
   examples: |
-    - no
-    - n
-    - never
-    - I don't think so
-    - don't like that
-    - no way
-    - not really
-
-- intent: mood_great
-  examples: |
-    - perfect
-    - great
-    - amazing
-    - feeling like a king
-    - wonderful
-    - I am feeling very good
-    - I am great
-    - I am amazing
-    - I am going to save the world
-    - super stoked
-    - extremely good
-    - so so perfect
-    - so good
-    - so perfect
-
-- intent: mood_unhappy
-  examples: |
-    - my day was horrible
-    - I am sad
-    - I don't feel very well
-    - I am disappointed
-    - super sad
-    - I'm so sad
-    - sad
-    - very sad
-    - unhappy
-    - not good
-    - not very good
-    - extremly sad
-    - so saad
-    - so sad
-
-- intent: bot_challenge
-  examples: |
-    - are you a bot?
-    - are you a human?
-    - am I talking to a bot?
-    - am I talking to a human?
+    - He estado trabajando con las tareas {0} y fui a las reuniones {1} 
+    - Fui a las reuniones {1} e hice las task {0} 
+    - Estuve yendo a las reuniones {1} y trabajando con la task {0}
+    - Trabaje con la task {0} y estuve yendo a las reuniones {0}
+    - Estuve haciendo las task {0} y asistiendo a las reuniones {0}
+    
