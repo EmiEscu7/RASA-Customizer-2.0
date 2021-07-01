@@ -3,6 +3,11 @@ version: "2.0"
 intents:
   - what_i_do
   - greet
+  - what_i_do_task
+  - what_i_do_meet
+  - what_i_do_both
+  - greet_meeting
+  - godbye_meeting
 
 entities:
   - what_i_do
