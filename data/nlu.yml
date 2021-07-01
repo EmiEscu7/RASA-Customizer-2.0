@@ -33,4 +33,20 @@ nlu:
     - Estuve yendo a las reuniones {1} y trabajando con la task {0}
     - Trabaje con la task {0} y estuve yendo a las reuniones {0}
     - Estuve haciendo las task {0} y asistiendo a las reuniones {0}
+
+- intent: greet_meeting
+  examples: |
+    - Hola, empezamos con la daily meeting
+    - Buenas, emepcemos con la daily
+    - Buen dia a todos, podemos empezar con la daily meeting
+    - Hola a todos, empecemos con la daily meeting
+    - Buenas, podemos empezar con la daily de hoy
+
+- intent: godbye_meeting
+  examples: |
+    - Gracias por asistir a la runion, pueden continuar con su trabajo
+    - Muy bien, gracias por venir. Continuen con lo que estaban haciendo
+    - Bien, y podemos dar por terminada la daily. Sigan con su trabajo
+    - Genial, sigan con su trabajo. Gracias por venir
+    - Perfecto, continuen con su trabajo. Gracias por venir a la reunion de hoy
     

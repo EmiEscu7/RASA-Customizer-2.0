@@ -120,7 +120,8 @@ class PersonalityPolicy(Policy):
 
     def get_personality(self, tracker):
         var = tracker.latest_message
-        metadata = var.metadata()
+        metadata = var.metadata
+        print("METADATA ---------------------> " + str(metadata))
         personality = metadata["personality"]
         return personality
 

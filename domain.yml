@@ -72,7 +72,37 @@ responses:
     - text: "Estuve yendo a las reunion {0}"
     - text: "Pude ir a las reunion {0}"
     
+  
+  utter_greet_meeting_formal:
+    - text: "Bueno. Comencemos con la daily meeting"
+    - text: "Hola, empezamos con la daily meeting"
+    - text: "Empezamos con la dayli meeting"
+  
+  utter_greet_meeting_comun:
+    - text: "Bien chicos, me alegra verlos. Empecemos con la daily meeting"
+    - text: "Estamos todos? Empezemos con la daily meeting"
+    - text: "Hola devs. Ya empezamos con la daily"
+  
+  utter_greet_meeting_informal:
+    - text: "Que onda boys?? Empezamos ya mismo"
+    - text: "Holanda muchachos. Espero que se encuentren joya. Empecemos con la daily"
+    - text: "Ya estamos todos los boludos?? Empezemos!!"
 
+
+  utter_godbye_meeting_formal:
+    - text: "Gracias por asistir a la runion. Pueden continuar con su trabajo"
+    - text: "Muy bien, gracias por venir. Continuen con lo que estaban haciendo"
+    - text: "Genial, sigan con su trabajo. Gracias por venir"
+  
+  utter_godbye_meeting_comun:
+    - text: "Bien chicos, ya pueden continuar con lo que venian haciendo"
+    - text: "Perfecto muchachos. Sigan asi. Vienen bien. Continuen con lo que estaban haciendo"
+    - text: "Continuen con su trabajo. Gracias por venir a la meeting"
+  
+  utter_godbye_meeting_informal:
+    - text: "Bien boys, gracias por venir. Sigan haciendo su trabajo que por algo les pago"
+    - text: "Vamos devs a trabajar. Termino la reunion por hoy"
+    - text: "A trabajaarrr, se termino lo lindo por hoy"
 
 
 session_config:
