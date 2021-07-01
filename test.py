@@ -1,20 +1,17 @@
 import requests
 import json
-
-PORT = "http://localhost:5005/webhooks/rest/webhook"
+"""
+    Este es un ejemplo de como debe ser el input y cual será el output
+"""
+URL = "http://localhost:5005/webhooks/rest_custom/webhook"
+        
 
 def send_msg(msg, name, personality):
     data = {"sender": name, "message": msg, "metadata": { "personality": personality} }
-    x = requests.post(PORT, json = data)
-    rta = x.json()
-    text = rta['text']
-    """if(rta != [] ):
-        while(len(rta) > 1): #Lo ultimo que hay en rta es el nombre a quien está destinado el mensaje
-            text += rta.pop(0)['text'] + ". "
-        text = [text]
-        text.append(rta.pop(0)['text'])
-    else:
-        text = ['','None']"""
+    x = requests.post(URL, json = data)
+    rta = x.json()[-1] #x.json() retorna una lista, cada elemento de la lista es un Dic
+    text = rta["text"]
+    
     if x.status_code == 200:
         return text
     else:
@@ -22,5 +19,13 @@ def send_msg(msg, name, personality):
         return None
 
 personality = [0.82, 0.54, 0.66, 0.69, 0.22]
-rta = send_msg("He estado trabajando con la tarea {0}", "scrum", personality)
+rta = send_msg("He estado trabajando con la tarea {0}", "Scrum", personality) #Input
+print(rta) #print del Output
+rta = send_msg("Fui a las reuniones {0}","Scrum",personality)
+print(rta)
+rta = send_msg("He estado trabajando con las tareas {0} y fui a las reuniones {1}","Scrum",personality)
+print(rta)
+rta = send_msg("Hola, empezamos con la daily meeting","Developers",personality)
+print(rta)
+rta = send_msg("Gracias por asistir a la runion, pueden continuar con su trabajo","Developers",personality)
 print(rta)
