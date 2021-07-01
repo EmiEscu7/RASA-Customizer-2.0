@@ -3,7 +3,7 @@
 El objetivo de este proyecto es a partir de un mensaje generico, generar un template acorde a la personalidad conservando la intenci�n del mensaje
 
 #### Su uso:
-Es obligatorio entrenar el bot antes de ejecutarlo, usar `rasa train` 
+Es obligatorio entrenar el bot antes de ejecutarlo por primera vez, usar `rasa train` 
 
 Para utilizar Rasa Customizer hay que ejecutar el componente de RASA, para eso utilizar: `rasa run -p <port> --enable-api --cors "*" --debug`
 Ejemplo: `rasa run -p 5005 --enable-api --cors "*" --debug`
