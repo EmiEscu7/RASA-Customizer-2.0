@@ -1,13 +1,6 @@
 version: "2.0"
 
 nlu:
-- intent: greet
-  examples: |
-    - hola
-    - holis
-    - uwu
-    - holanda
-    - buenas tardes
 
 - intent: what_i_do_task
   examples: |
@@ -42,7 +35,7 @@ nlu:
     - Hola a todos, empecemos con la daily meeting
     - Buenas, podemos empezar con la daily de hoy
 
-- intent: godbye_meeting
+- intent: goodbye_meeting
   examples: |
     - Gracias por asistir a la runion, pueden continuar con su trabajo
     - Muy bien, gracias por venir. Continuen con lo que estaban haciendo

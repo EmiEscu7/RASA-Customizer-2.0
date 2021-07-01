@@ -1,3 +1,30 @@
 version: "2.0"
 
 stories:
+
+- story: init meet
+  steps: 
+    - intent: greet_meeting
+    - action: greet_meeting_comun
+
+- story: goodby meet
+  steps: 
+    - intent: goodbye_meeting
+    - action: goodbye_meeting_comun
+
+- story: what i dotask
+  steps: 
+    - intent: what_i_do_task
+    - action: what_i_do_task_comun
+
+- story: what i do meet 
+  steps: 
+    - intent: what_i_do_meet
+    - action: what_i_do_meet_comun
+
+- story: what i do both
+  steps: 
+    - intent: what_i_do_both
+    - action: what_i_do_both_comun
+
+    
