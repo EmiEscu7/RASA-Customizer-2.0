@@ -6,6 +6,7 @@ import json
 import sys
 import logging
 import random as rd
+import numpy as np
 
 from tqdm import tqdm
 from typing import Optional, Any, Dict, List, Text
@@ -133,30 +134,63 @@ class PersonalityPolicy(Policy):
             rta += intent + style_answer
         return rta        
 
+     def vecinos(self, vector,familia):
+        """
+            Este algoritmo obtiene la distancia entre "vector" y todos los vectores de familia
+            
+            Retorna: Una distancia (mientras mas chica mejor, ya que queremos ver que tan parecidos son a los vectores que tenemos definidos como personalidad)
+             
+        """
+        dist = 0
+        a = np.array(vector)    
+        for vector in familia:
+            b = np.array(vector)
+            dist += np.linalg.norm(a-b)
+
+        return dist
+
+
     def get_style_answer(self, personality) -> Text:  
         
-        vector_personalities = []
-        for value in personality:
-            vector_personalities.append(value)
+         """ 
+            Este metodo agarra los valores de cada atributo del diccionario pasado por parametro y en base a ellos, busca que perfil tiene mas similitud con ellos.
 
-        priorty_mood = self.get_priority_mood()
-        total_weight = 0
-        relation = float(0.0)
-        for i in range(len(personality)): 
-            relation += vector_personalities[i] * priorty_mood[i]
-            total_weight += priorty_mood[i]
+            Retorna: Un tipo de respuesta en base a la personalidad (String)
+        """
 
-        relation /= total_weight
+        #Neuroticism": locura
+        #"Extraversion": sociabilidad
+        #"Openness": apertura a nuevas experiencias
+        #"Agreeableness": buen trato con los demas
+        #Conscientiousness: 0 cuidadoso, 1 diligente 
 
-        res = [ [float(0.3), "_formal"], 
-                [float(0.6), "_comun"], 
-                [float(1.0), "_informal"] ]
-        i = 0 
-        while (relation > res[i][0]):
-            i+=1
-
-        return res[i][1] #esto retorna "_formal" ó "_comun" ó "_informal" segun corresponda con la personality
         
+        vector_personalities = []
+        
+        
+        
+        vector_personalities.append(diccionario[Neuroticism])
+        vector_personalities.append(diccionario[Extraversion])
+        vector_personalities.append(diccionario[Openness])
+        vector_personalities.append(diccionario[Agreeableness])
+        vector_personalities.append(diccionario[Conscientiousness])
+
+        formal= vecinosFormal(vector_personalities)
+        comun = vecinosComun(vector_personalities)
+        informal= vecinosInformal(vector_personalities)
+
+        if(formal < comun):
+            if(formal < informal):
+                return "_formal"
+            else:
+                return "_informal"
+        else:
+            if (comun < informal):
+                return "_comun"
+            else:
+                return "_informal"
+
+ 
 
     def get_priority_mood(self):
         """
