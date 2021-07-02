@@ -144,6 +144,9 @@ class PersonalityPolicy(Policy):
         relation = float(0.0)
         for i in range(len(personality)): 
             relation += vector_personalities[i] * priorty_mood[i]
+            total_weight += priorty_mood[i]
+
+        relation /= total_weight
 
         res = [ [float(0.3), "_formal"], 
                 [float(0.6), "_comun"], 
@@ -162,4 +165,6 @@ class PersonalityPolicy(Policy):
             estado de animo de una persona. Actualmente devolvemos un vector con unos
             pesos determinados, que modelan los valores esperados del algoritmo
         """
-        return [0.35,0.4,0.1,0.05,0.3]
+        # pesos asignados a cada dimensión. 
+        # [Neuroticism, Conscientiousness, Openness, Agreeableness, Extraversion]
+        return [2, 1.5, 1, 1.5, 2]
