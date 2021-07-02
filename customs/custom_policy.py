@@ -140,7 +140,7 @@ class PersonalityPolicy(Policy):
             vector_personalities.append(value)
 
         priorty_mood = self.get_priority_mood()
-
+        total_weight = 0
         relation = float(0.0)
         for i in range(len(personality)): 
             relation += vector_personalities[i] * priorty_mood[i]
