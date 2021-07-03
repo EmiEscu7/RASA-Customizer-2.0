@@ -17,6 +17,7 @@ A su vez el componente trabaja con un custom channel llamado rest_custom, basado
 Template URL: `http://localhost:<bot_port>/webhooks/rest_custom/webhook`
 bot_port hace referencia al puerto donde se encuentra ejecutando el componente. 
 Ejemplo URL: `http://localhost:5005/webhooks/rest_custom/webhook`
+
 Se espera que el json que se envie por el request.post contenga en el metadata el diccionario que representa la personalidad del bot. Para entender mejor ir a test.py
 El output a este request.post será el texto plano listo para ser formateado en python.
 
