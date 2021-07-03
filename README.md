@@ -2,6 +2,10 @@
 ### Objetivo:
 El objetivo de este proyecto es a partir de un mensaje generico, generar un template acorde a la personalidad conservando la intención del mensaje
 
+### Librerias necesarias:
+- numpy
+- pandas
+
 #### Su uso:
 Es obligatorio entrenar el bot antes de ejecutarlo por primera vez, usar `rasa train` 
 

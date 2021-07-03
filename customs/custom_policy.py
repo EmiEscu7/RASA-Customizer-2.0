@@ -1,24 +1,13 @@
-import zlib
-
-
-import base64
-import json
-import sys
-import logging
-import random as rd
 import numpy as np
+import pandas as pd
 
-from tqdm import tqdm
 from typing import Optional, Any, Dict, List, Text
 
-import rasa.utils.io
-import rasa.shared.utils.io
-from rasa.shared.constants import DOCS_URL_POLICIES
-from rasa.shared.core.domain import State, Domain
-from rasa.shared.core.events import ActionExecuted
+
+from rasa.shared.core.domain import Domain
+
 from rasa.core.featurizers.tracker_featurizers import (
-    TrackerFeaturizer,
-    MaxHistoryTrackerFeaturizer,
+    TrackerFeaturizer
 )
 from rasa.shared.nlu.interpreter import NaturalLanguageInterpreter
 from rasa.core.policies.policy import Policy, PolicyPrediction
@@ -26,32 +15,11 @@ from rasa.shared.core.trackers import DialogueStateTracker
 from rasa.shared.core.generator import TrackerWithCachedStates
 from rasa.shared.utils.io import is_logging_disabled
 from rasa.core.constants import MEMOIZATION_POLICY_PRIORITY
-#importaciones nuevas
-from rasa.core.channels.channel import InputChannel #clase que hace l rest. Me va a devolver la metadata
+
 from rasa.core.policies.policy import confidence_scores_for, PolicyPrediction
 from rasa.shared.nlu.constants import INTENT_NAME_KEY
-from rasa.shared.core.events import SlotSet
-from rasa.shared.nlu.constants import (
-    ENTITY_ATTRIBUTE_VALUE,
-    ENTITY_ATTRIBUTE_TYPE,
-    ENTITY_ATTRIBUTE_GROUP,
-    ENTITY_ATTRIBUTE_ROLE,
-    ACTION_TEXT,
-    ACTION_NAME,
-    ENTITIES,
-)
-from rasa.shared.core.constants import (
-    ACTION_LISTEN_NAME,
-    LOOP_NAME,
-    SHOULD_NOT_BE_SET,
-    PREVIOUS_ACTION,
-    ACTIVE_LOOP,
-    LOOP_REJECTED,
-    TRIGGER_MESSAGE,
-    LOOP_INTERRUPTED,
-    ACTION_SESSION_START_NAME,
-    FOLLOWUP_ACTION,
-)
+
+
 
 
 # temporary constants to support back compatibility
@@ -134,25 +102,9 @@ class PersonalityPolicy(Policy):
             rta += intent + style_answer
         return rta        
 
-     def vecinos(self, vector,familia):
-        """
-            Este algoritmo obtiene la distancia entre "vector" y todos los vectores de familia
-            
-            Retorna: Una distancia (mientras mas chica mejor, ya que queremos ver que tan parecidos son a los vectores que tenemos definidos como personalidad)
-             
-        """
-        dist = 0
-        a = np.array(vector)    
-        for vector in familia:
-            b = np.array(vector)
-            dist += np.linalg.norm(a-b)
-
-        return dist
-
-
     def get_style_answer(self, personality) -> Text:  
         
-         """ 
+        """ 
             Este metodo agarra los valores de cada atributo del diccionario pasado por parametro y en base a ellos, busca que perfil tiene mas similitud con ellos.
 
             Retorna: Un tipo de respuesta en base a la personalidad (String)
@@ -163,37 +115,19 @@ class PersonalityPolicy(Policy):
         #"Openness": apertura a nuevas experiencias
         #"Agreeableness": buen trato con los demas
         #Conscientiousness: 0 cuidadoso, 1 diligente 
-
         
-        vector_personalities = []
-        
-        
-        
-        vector_personalities.append(diccionario[Neuroticism])
-        vector_personalities.append(diccionario[Extraversion])
-        vector_personalities.append(diccionario[Openness])
-        vector_personalities.append(diccionario[Agreeableness])
-        vector_personalities.append(diccionario[Conscientiousness])
+        vector_personalities = self.transform_dict_to_vector(personality)   
 
-        formal= vecinosFormal(vector_personalities)
-        comun = vecinosComun(vector_personalities)
-        informal= vecinosInformal(vector_personalities)
+        neighbour = self.get_neighbour(vector_personalities) #obtiene el vector + parecido
+        #neighbour = [nro,[numpyArray]]
+        vector = np.take(neighbour, 1)
+        return np.take(vector, len(vector)-1) #retorna si era "_formal" ó "_comun" ó "_informal"
 
-        if(formal < comun):
-            if(formal < informal):
-                return "_formal"
-            else:
-                return "_informal"
-        else:
-            if (comun < informal):
-                return "_comun"
-            else:
-                return "_informal"
 
- 
 
     def get_priority_mood(self):
         """
+            ----------SIN USO ACTUALMENTE----------
             La idea de esta funcion es que un algoritmo de machine learning determine
             la importancia que se le deba dar a c/u de los parametros que definen el 
             estado de animo de una persona. Actualmente devolvemos un vector con unos
@@ -202,3 +136,45 @@ class PersonalityPolicy(Policy):
         # pesos asignados a cada dimensión. 
         # [Neuroticism, Conscientiousness, Openness, Agreeableness, Extraversion]
         return [2, 1.5, 1, 1.5, 2]
+    
+    def get_neighbour(self, input) -> np.ndarray:
+        """
+            Este algoritmo obtiene la distancia entre "vector" y todos los vectores de familia
+            Retorna: Una distancia (mientras mas chica mejor, ya que queremos ver que tan parecidos son a los vectores que tenemos definidos como personalidad)
+             
+        """
+        
+        input_numpy = np.array(input)
+        
+        min_dist_formal = self.compare_to_neighbour(input_numpy,"_formal")
+        min_dist_informal = self.compare_to_neighbour(input_numpy,"_informal")
+        min_dist_comun = self.compare_to_neighbour(input_numpy,"_comun")
+        return (min(min_dist_comun,min_dist_formal,min_dist_informal))
+
+    def compare_to_neighbour(self,vector_input:np.ndarray,neighbour:Text) -> list:
+        
+        dataframe_examples = pd.read_csv(r"examples_personalities.csv",sep=';')
+        min_vector = dataframe_examples.values[0] #el primero del dataframe
+        min_vector_no_string = np.array(np.delete(min_vector,min_vector.size -1))
+        min_dist = 0
+        cant = 0
+
+        for example in dataframe_examples.values: #example = [1,1,1,1,1,STRING]
+            if( str(np.take(example, len(example)-1)) == neighbour ):
+                example_no_string = np.delete(example,example.size - 1) #quita el string
+                dist_actual = np.linalg.norm(vector_input-example_no_string)
+                if(min_dist < dist_actual):
+                    min_vector = example
+                min_dist += dist_actual
+                cant+=1
+
+        return [(min_dist/cant),min_vector]
+
+    def transform_dict_to_vector(self, dict):
+        vector = []
+        vector.append(dict["Neuroticism"])
+        vector.append(dict["Extraversion"])
+        vector.append(dict["Openness"])
+        vector.append(dict["Agreeableness"])
+        vector.append(dict["Conscientiousness"])
+        return vector

@@ -17,8 +17,11 @@ def send_msg(msg, name, personality):
     else:
         print(x.raw)
         return None
-
-personality = [0.82, 0.54, 0.66, 0.69, 0.22] #estas prob hacen que los mensajes pasen a ser de formato informal
+personality = {"Neuroticism": 0.1, 
+        "Extraversion": 0.9, 
+        "Openness": 0.9, 
+        "Agreeableness": 0.9, 
+        "Conscientiousness": 0.9} #estas prob hacen que los mensajes pasen a ser de formato informal
 rta = send_msg("He estado trabajando con la tarea {0}", "Scrum", personality) #Input
 print(rta) #print del Output
 rta = send_msg("Fui a las reuniones {0}","Scrum",personality)
