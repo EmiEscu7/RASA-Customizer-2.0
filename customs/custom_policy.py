@@ -1,6 +1,5 @@
-import numpy as np
-import pandas as pd
-
+import csv
+from math import sqrt
 from typing import Optional, Any, Dict, List, Text
 
 
@@ -102,27 +101,19 @@ class PersonalityPolicy(Policy):
             rta += intent + style_answer
         return rta        
 
-    def get_style_answer(self, personality) -> Text:  
+    def get_style_answer(self, personality:dict) -> Text:  
         
         """ 
             Este metodo agarra los valores de cada atributo del diccionario pasado por parametro y en base a ellos, busca que perfil tiene mas similitud con ellos.
 
             Retorna: Un tipo de respuesta en base a la personalidad (String)
         """
-
-        #Neuroticism": locura
-        #"Extraversion": sociabilidad
-        #"Openness": apertura a nuevas experiencias
-        #"Agreeableness": buen trato con los demas
-        #Conscientiousness: 0 cuidadoso, 1 diligente 
-        
         vector_personalities = self.transform_dict_to_vector(personality)   
-
-        neighbour = self.get_neighbour(vector_personalities) #obtiene el vector + parecido
-        #neighbour = [nro,[numpyArray]]
-        vector = np.take(neighbour, 1)
-        return np.take(vector, len(vector)-1) #retorna si era "_formal" ó "_comun" ó "_informal"
-
+        neighbour = self.get_neighbour(vector_personalities) #obtiene a que vecindad se parece el vector
+        #neighbour = [nro,[vector_personality]]
+        #vector_personality = [nro,nro,nro,nro,nro,"_formal"] -> ejemplo
+        vector = neighbour[-1] # -> esto da el vector_personality
+        return vector[-1] #retorna si era "_formal" ó "_comun" ó "_informal"
 
 
     def get_priority_mood(self):
@@ -134,35 +125,37 @@ class PersonalityPolicy(Policy):
             pesos determinados, que modelan los valores esperados del algoritmo
         """
         # pesos asignados a cada dimensión. 
-        # [Neuroticism, Conscientiousness, Openness, Agreeableness, Extraversion]
         return [2, 1.5, 1, 1.5, 2]
     
-    def get_neighbour(self, input) -> np.ndarray:
+    def get_neighbour(self, input:list) -> list:
         """
-            Este algoritmo obtiene la distancia entre "vector" y todos los vectores de familia
-            Retorna: Una distancia (mientras mas chica mejor, ya que queremos ver que tan parecidos son a los vectores que tenemos definidos como personalidad)
-             
+            Este algoritmo obtiene la distancia entre "input" y todos los vectores de familia
+            Retorna: El menor de los tres vectores calculado, exactamente retornará: [dist_min, vector_personality]
+            vector_personality = [nro,nro,nro,nro,nro,"_formal"] -> ejemplo
+        
         """
-        
-        input_numpy = np.array(input)
-        
-        min_dist_formal = self.compare_to_neighbour(input_numpy,"_formal")
-        min_dist_informal = self.compare_to_neighbour(input_numpy,"_informal")
-        min_dist_comun = self.compare_to_neighbour(input_numpy,"_comun")
+               
+        min_dist_formal = self.compare_to_neighbour(input,"_formal")
+        min_dist_informal = self.compare_to_neighbour(input,"_informal")
+        min_dist_comun = self.compare_to_neighbour(input,"_comun")
         return (min(min_dist_comun,min_dist_formal,min_dist_informal))
 
-    def compare_to_neighbour(self,vector_input:np.ndarray,neighbour:Text) -> list:
-        
-        dataframe_examples = pd.read_csv(r"examples_personalities.csv",sep=';')
-        min_vector = dataframe_examples.values[0] #el primero del dataframe
-        min_vector_no_string = np.array(np.delete(min_vector,min_vector.size -1))
+    def compare_to_neighbour(self,vector_input:list, neighbour: Text) -> list:
+        """
+         Compara el vector_input con la vecindad en particular, retornando
+         la distancia que hay a tal vecindad.
+         Una vecindad se compone de vectores que definen la vecindad.
+         Output: [distancia,vector+similar]
+        """
+        dataframe_examples = self.get_examples_personalities_values()
+        min_vector = dataframe_examples[0] #el primero del dataframe
         min_dist = 0
         cant = 0
 
-        for example in dataframe_examples.values: #example = [1,1,1,1,1,STRING]
-            if( str(np.take(example, len(example)-1)) == neighbour ):
-                example_no_string = np.delete(example,example.size - 1) #quita el string
-                dist_actual = np.linalg.norm(vector_input-example_no_string)
+        for example in dataframe_examples: #example = [1,1,1,1,1,STRING]
+            if( example[-1] == neighbour ):
+                example_no_string = example[:-1] #quita el string
+                dist_actual = self.dist_euclidea(vector_input,example_no_string)
                 if(min_dist < dist_actual):
                     min_vector = example
                 min_dist += dist_actual
@@ -170,7 +163,41 @@ class PersonalityPolicy(Policy):
 
         return [(min_dist/cant),min_vector]
 
-    def transform_dict_to_vector(self, dict):
+    def get_examples_personalities_values(self) -> list:
+        """
+         Lee el archivo .csv y lo transforma a una lista
+         Excluye la primer row que es la que contiene el 
+         "encabezado" del csv. ("NEUROTICISM";"EXTRAVERSION";"OPENNESS";"AGREEABLENESS";"CONSCIENTIOUSNESS";"STYLE")
+        """
+        conjunto = []
+        example = []
+        with open('examples_personalities.csv') as csvfile:
+            csv_reader = csv.reader(csvfile, delimiter=';',quoting=csv.QUOTE_NONNUMERIC)
+            line_count = 0
+            for row in csv_reader:
+                if line_count == 0:
+                    #print(f'Estas son las columnas {", ".join(row)}')   Las columnas no son value
+                    line_count += 1
+                else:
+                    for i in range(len(row)):
+                        example.append(row[i])
+                    conjunto.append(example)
+                    example = []
+        return conjunto
+
+    def dist_euclidea(self,p:list,q:list) -> float:
+        """
+         Calcula la distancia euclídea tal como está definida en Python 3.8
+         Pero como trabajamos con Python 3.7.9 no tenemos acceso a esa funcionalidad
+         por lo que aquí está tal funcion
+        """
+        return sqrt(sum((px - qx) ** 2.0 for px, qx in zip(p, q)))
+
+    def transform_dict_to_vector(self, dict: dict) -> list:
+        """
+         Transforma el diccionario en un vector ya que es importante
+         el orden en que se genera el vector
+        """
         vector = []
         vector.append(dict["Neuroticism"])
         vector.append(dict["Extraversion"])

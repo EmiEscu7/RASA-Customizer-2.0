@@ -9,7 +9,7 @@ URL = "http://localhost:5005/webhooks/rest_custom/webhook"
 def send_msg(msg, name, personality):
     data = {"sender": name, "message": msg, "metadata": { "personality": personality} }
     x = requests.post(URL, json = data)
-    rta = x.json()[-1] #x.json() retorna una lista, cada elemento de la lista es un Dic
+    rta = x.json()[-1] 
     text = rta["text"]
     
     if x.status_code == 200:
@@ -22,6 +22,7 @@ personality = {"Neuroticism": 0.1,
         "Openness": 0.9, 
         "Agreeableness": 0.9, 
         "Conscientiousness": 0.9} #estas prob hacen que los mensajes pasen a ser de formato informal
+
 rta = send_msg("He estado trabajando con la tarea {0}", "Scrum", personality) #Input
 print(rta) #print del Output
 rta = send_msg("Fui a las reuniones {0}","Scrum",personality)

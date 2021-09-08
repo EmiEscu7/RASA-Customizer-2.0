@@ -89,7 +89,7 @@ responses:
   utter_greet_meeting_informal:
     - text: "Que onda boys?? Empezamos ya mismo"
     - text: "Holanda muchachos. Espero que se encuentren joya. Empecemos con la daily"
-    - text: "Ya estamos todos los boludos?? Empezemos!!"
+    - text: "Ya estamos todos boyss?? Empezemos!!"
 
 
   utter_goodbye_meeting_formal:
